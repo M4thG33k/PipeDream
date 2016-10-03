@@ -36,7 +36,7 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 minecraft {
-    version = "1.10-12.18.0.1986-1.10.0"
+    version = "1.10.2-12.18.1.2094"
     runDir = "run"
     
     // the mappings can be changed at any time, and must be in the following format.
@@ -75,7 +75,8 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
     //for JEI stuff
-    deobfCompile "mezz.jei:jei_1.10.2:3.10.0.262"
+    deobfCompile "mezz.jei:jei_1.10.2:3.10.0.262:api"
+    runtime "mezz.jei:jei_1.10.2:3.10.0.262"
     //end for JEI stuff
 
 }

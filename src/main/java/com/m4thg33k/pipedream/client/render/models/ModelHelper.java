@@ -1,6 +1,7 @@
 package com.m4thg33k.pipedream.client.render.models;
 
 import com.google.common.collect.ImmutableMap;
+import com.m4thg33k.pipedream.PipeDream;
 import com.m4thg33k.pipedream.core.util.LogHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
@@ -36,8 +37,19 @@ public class ModelHelper {
         }
     }
 
+    public static IModel retextureFromResourceLocation(OBJModel model, String toReplace, ResourceLocation location)
+    {
+        return (((OBJModel) model.retexture(ImmutableMap.of(toReplace, location.toString()))).process(ImmutableMap.of("flip-v","true")));
+    }
+
+    public static IModel retextureFromLocation(OBJModel model, String toReplace, String modID, String suffix)
+    {
+        return (((OBJModel) model.retexture(ImmutableMap.of(toReplace, modID + ":" + suffix))).process(ImmutableMap.of("flip-v","true")));
+    }
+
     public static IModel retexture(OBJModel model, String toReplace, String suffix){
-        return (((OBJModel) model.retexture(ImmutableMap.of(toReplace, "pipedream:blocks/" + suffix))).process(ImmutableMap.of("flip-v", "true")));
+        return retextureFromLocation(model, toReplace, PipeDream.MODID, "blocks/" + suffix);
+//        return (((OBJModel) model.retexture(ImmutableMap.of(toReplace, "pipedream:blocks/" + suffix))).process(ImmutableMap.of("flip-v", "true")));
     }
 
     public static IBakedModel bake(IModel model){

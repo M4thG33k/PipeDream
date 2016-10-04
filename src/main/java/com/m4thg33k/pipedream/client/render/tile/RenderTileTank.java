@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fluids.FluidRegistry;
 
 public class RenderTileTank extends RenderTileSymmetricBase<TileTank>{
 
@@ -53,7 +54,7 @@ public class RenderTileTank extends RenderTileSymmetricBase<TileTank>{
             {
                 GlStateManager.pushMatrix();
                 rotate(facings[i]);
-                tankValve.renderValve();
+                tankValve.renderModel();
                 GlStateManager.popMatrix();
             }
         }

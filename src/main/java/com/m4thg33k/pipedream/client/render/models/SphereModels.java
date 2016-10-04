@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class SphereModels {
 
-    Map<String, ModelSphere> cache = new HashMap<String, ModelSphere>();
+    private static Map<String, ModelSphere> cache = new HashMap<String, ModelSphere>();
 
     public void init()
     {
@@ -22,5 +22,23 @@ public class SphereModels {
 
         LogHelper.info("Cached " + cache.size() + " models!");
         LogHelper.info("breakpoint");
+    }
+
+    public static ModelSphere getSphereFromFluid(Fluid fluid)
+    {
+        if (fluid == null)
+        {
+            return null;
+        }
+        return getSphereFromFluidName(fluid.getName());
+    }
+
+    public static ModelSphere getSphereFromFluidName(String name)
+    {
+        if (cache.keySet().contains(name))
+        {
+            return cache.get(name);
+        }
+        return null;
     }
 }

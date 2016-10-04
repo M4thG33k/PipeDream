@@ -74,8 +74,8 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
     //for JEI stuff
-    deobfCompile "mezz.jei:jei_1.10.2:3.10.0.262:api"
-    runtime "mezz.jei:jei_1.10.2:3.10.0.262"
+    deobfCompile "mezz.jei:jei_1.10.2:3.12.4.295:api"
+    runtime "mezz.jei:jei_1.10.2:3.12.4.295"
     //end for JEI stuff
 
 }

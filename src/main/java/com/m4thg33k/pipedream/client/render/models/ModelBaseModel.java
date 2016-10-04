@@ -26,8 +26,7 @@ public class ModelBaseModel {
         }
         else {
             //apply textures with correct orientation
-            IModel model = ModelHelper.retextureFromResourceLocation(theModel, toReplace, FluidRegistry.WATER.getStill());
-//            IModel model = ModelHelper.retexture(theModel, toReplace, replacement);
+            IModel model = ModelHelper.retexture(theModel, toReplace, replacement);
 
             //"turn on" the model
             myModel = ModelHelper.bake(model);
@@ -36,7 +35,17 @@ public class ModelBaseModel {
 
     public ModelBaseModel(String modelName)
     {
-        this(modelName, null, null);
+        this(modelName, null, "");
+    }
+
+    public ModelBaseModel(String modelName, String toReplace, ResourceLocation location)
+    {
+        //load the model
+        OBJModel theModel = ModelHelper.loadModel(modelName);
+
+        IModel model = ModelHelper.retextureFromResourceLocation(theModel, toReplace, location);
+
+        myModel = ModelHelper.bake(model);
     }
 
     public void renderModel()

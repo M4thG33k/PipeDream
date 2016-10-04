@@ -58,16 +58,19 @@ public class FluidConnections implements ISideConnector {
     @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        compound.setInteger(nbtKey, getConnectionsAsInteger());
+        return compound;
+    }
+
+    public int getConnectionsAsInteger(){
         int value = 0;
-        for (int i=0; i< 6;i++)
+        for (int i=0; i<6; i++)
         {
             if (connections[i])
             {
                 value += (1 << i);
             }
         }
-        compound.setInteger(nbtKey, value);
-
-        return compound;
+        return value;
     }
 }

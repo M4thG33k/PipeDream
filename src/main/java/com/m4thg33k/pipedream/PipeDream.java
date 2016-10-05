@@ -1,6 +1,9 @@
 package com.m4thg33k.pipedream;
 
+import com.m4thg33k.pipedream.blocks.ModBlocks;
 import com.m4thg33k.pipedream.core.proxy.CommonProxy;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -44,4 +47,11 @@ public class PipeDream {
     {
         //Initialize commands here
     }
+
+    public static CreativeTabs tabPipeDream = new CreativeTabs("tabPipeDream") {
+        @Override
+        public Item getTabIconItem() {
+            return Item.getItemFromBlock(ModBlocks.blockTank);
+        }
+    };
 }

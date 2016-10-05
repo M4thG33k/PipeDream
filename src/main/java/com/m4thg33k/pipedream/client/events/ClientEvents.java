@@ -1,5 +1,6 @@
 package com.m4thg33k.pipedream.client.events;
 
+import com.m4thg33k.pipedream.PipeDream;
 import com.m4thg33k.pipedream.core.util.LogHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -13,6 +14,19 @@ public class ClientEvents {
     {
         LogHelper.info("Stitching textures into the map");
 
-        pre.getMap().registerSprite(new ResourceLocation("pipedream","blocks/tankValve"));
+        reg(pre, "tankValve");
+        reg(pre, "tankValvePull");
+        reg(pre, "tankValvePush");
+        reg(pre, "tankSphere");
+
+//        pre.getMap().registerSprite(new ResourceLocation("pipedream","blocks/tankValve"));
+//        pre.getMap().registerSprite(new ResourceLocation("pipedream","blocks/tankValvePull"));
+//        pre.getMap().registerSprite(new ResourceLocation("pipedream","blocks/tankValvePush"));
+//        pre.getMap().registerSprite(new ResourceLocation(PipeDream.MODID, "blocks/tankSphere"));
+    }
+
+    private void reg(TextureStitchEvent.Pre pre, String suffix)
+    {
+        pre.getMap().registerSprite(new ResourceLocation(PipeDream.MODID, "blocks/"+suffix));
     }
 }

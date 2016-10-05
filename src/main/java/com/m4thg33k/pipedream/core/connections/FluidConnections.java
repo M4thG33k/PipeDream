@@ -73,4 +73,19 @@ public class FluidConnections implements ISideConnector {
         }
         return value;
     }
+
+    @Override
+    public void rotateAboutYAxis() {
+        boolean[] temp = new boolean[6];
+
+        for (EnumFacing facing : EnumFacing.HORIZONTALS)
+        {
+            temp[facing.ordinal()] = connections[facing.rotateY().ordinal()];
+        }
+
+        for (EnumFacing facing: EnumFacing.HORIZONTALS)
+        {
+            connections[facing.ordinal()] = temp[facing.ordinal()];
+        }
+    }
 }

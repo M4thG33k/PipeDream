@@ -1,0 +1,21 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "pipedream:ItemWrench",
+    "transform": "forge:default-item"
+  },
+  "variants": {
+    "meta=0":
+    [{
+      "textures": {
+        "layer0": "pipedream:items/ItemWrench"
+      }
+    }],
+    "meta=1":
+    [{
+      "textures": {
+        "layer0": "pipedream:items/ItemWrenchUpsideDown"
+      }
+    }]
+  }
+}

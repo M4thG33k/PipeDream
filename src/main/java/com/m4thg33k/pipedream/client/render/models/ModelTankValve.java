@@ -5,13 +5,27 @@ import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.fluids.FluidRegistry;
 
-public class ModelTankValve extends ModelBaseModel{
+import java.util.HashMap;
+import java.util.Map;
 
-    private IBakedModel valveModel;
+public class ModelTankValve extends ModelBaseMultiModel{
+
+    public static final String DEFAULT = "default";
+    public static final String PUSH = "push";
+    public static final String PULL = "pull";
+
 
     public ModelTankValve()
     {
-        super("tankValve","#None","tankValve");
+        super();
+
+        Map<String, String> keys = new HashMap<String, String>();
+        keys.put(DEFAULT,"tankValve");
+        keys.put(PUSH, "tankValvePush");
+        keys.put(PULL, "tankValvePull");
+
+        createModels("tankValve", "#None", keys);
+
 //        //load the model
 //        OBJModel model = ModelHelper.loadModel("tankValve");
 //
@@ -23,18 +37,18 @@ public class ModelTankValve extends ModelBaseModel{
 //        valveModel = ModelHelper.bake(valve);
     }
 
-//    public void renderValve()
-//    {
-//        renderModel(valveModel);
-//    }
-//
-//    private void renderModel(IBakedModel model)
-//    {
-//        renderModel(model, -1);
-//    }
-//
-//    private void renderModel(IBakedModel model, int color)
-//    {
-//        ModelHelper.renderModel(model, color);
-//    }
+    public void renderModel(int data)
+    {
+        switch (data)
+        {
+            case 1:
+                renderModel(PUSH);
+                break;
+            case 2:
+                renderModel(PULL);
+                break;
+            default:
+                renderModel(DEFAULT);
+        }
+    }
 }

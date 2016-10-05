@@ -15,5 +15,7 @@ public interface ISideConnector {
 
     NBTTagCompound writeToNBT(NBTTagCompound compound);
 
+    void rotateAboutYAxis();
+
 
 }

@@ -18,6 +18,7 @@ public class ItemRenderRegisters {
             ModelLoader.setCustomModelResourceLocation(ModItems.itemWrench, i, new ModelResourceLocation(PipeDream.MODID+":"+ Names.ITEM_WRENCH, "meta="+i));
         }
 
+
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.blockTank), 0, new ModelResourceLocation(PipeDream.MODID+":"+Names.TILE_TANK,"normal"));
     }
 }

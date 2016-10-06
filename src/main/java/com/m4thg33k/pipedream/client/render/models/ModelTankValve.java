@@ -24,7 +24,7 @@ public class ModelTankValve extends ModelBaseMultiModel{
         keys.put(PUSH, "tankValvePush");
         keys.put(PULL, "tankValvePull");
 
-        createModels("tankValve", "#None", keys);
+        createModels("tankValve", "#valveTexture", keys);
 
 //        //load the model
 //        OBJModel model = ModelHelper.loadModel("tankValve");

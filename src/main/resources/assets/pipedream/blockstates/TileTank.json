@@ -1,0 +1,20 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "textures": {
+            "#None": "pipedream:blocks/tankSphere"
+        },
+        "model": "pipedream:sphere1.obj"
+    },
+    "variants": {
+        "normal": [{
+            "transform":
+            {
+                "scale": [1, 1, 1]
+            },
+            "submodel": {
+                "valve1": { "model": "pipedream:tankValve.obj"}
+            }
+        }]
+    }
+}

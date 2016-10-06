@@ -227,6 +227,6 @@ public class TileTank extends TileEntity implements ITickable, IDismantleableTil
     {
         fluidConnections.rotateAboutYAxis();
         fluidConnectionTypes.rotateAboutYAxis();
-        return old.rotateY();
+        return old.rotateYCCW();
     }
 }

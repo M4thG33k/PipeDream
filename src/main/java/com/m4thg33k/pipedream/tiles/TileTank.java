@@ -4,6 +4,8 @@ import com.m4thg33k.pipedream.core.connections.FluidConnections;
 import com.m4thg33k.pipedream.core.connections.QuantifiedConnections;
 import com.m4thg33k.pipedream.core.interfaces.IDismantleableTile;
 import com.m4thg33k.pipedream.core.util.LogHelper;
+import com.m4thg33k.pipedream.particles.ParticleFluidOrb;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -12,14 +14,16 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class TileTank extends TileEntity implements ITickable, IDismantleableTile{
+public class TileTank extends TileEntity implements ITickable, IDismantleableTile, IFluidHandler{
 
     protected FluidTank tank = new FluidTank(8*Fluid.BUCKET_VOLUME);
     protected FluidConnections fluidConnections = new FluidConnections();
@@ -127,8 +131,8 @@ public class TileTank extends TileEntity implements ITickable, IDismantleableTil
     public <T> T getCapability(@Nonnull  Capability<T> capability, @Nullable EnumFacing facing) {
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && (facing == null || fluidConnections.isSideConnected(facing)))
         {
-            worldObj.notifyBlockUpdate(pos, worldObj.getBlockState(pos), worldObj.getBlockState(pos), 0);
-            return (T) tank;
+//            worldObj.notifyBlockUpdate(pos, worldObj.getBlockState(pos), worldObj.getBlockState(pos), 0);
+            return (T) this;
         }
         return super.getCapability(capability, facing);
     }
@@ -208,8 +212,7 @@ public class TileTank extends TileEntity implements ITickable, IDismantleableTil
 
         if (isDirty)
         {
-            this.markDirty();
-            this.worldObj.notifyBlockUpdate(pos, worldObj.getBlockState(pos), worldObj.getBlockState(pos), 0);
+            performUpdate();
         }
     }
 
@@ -228,5 +231,48 @@ public class TileTank extends TileEntity implements ITickable, IDismantleableTil
         fluidConnections.rotateAboutYAxis();
         fluidConnectionTypes.rotateAboutYAxis();
         return old.rotateYCCW();
+    }
+
+    @Override
+    public IFluidTankProperties[] getTankProperties() {
+        return tank.getTankProperties();
+    }
+
+    @Override
+    public int fill(FluidStack resource, boolean doFill) {
+        int amount = tank.fill(resource, doFill);
+        if (doFill && amount>0)
+        {
+            performUpdate();
+        }
+        return amount;
+    }
+
+    @Nullable
+    @Override
+    public FluidStack drain(FluidStack resource, boolean doDrain) {
+        FluidStack toReturn = tank.drain(resource, doDrain);
+        if (doDrain && toReturn != null && toReturn.amount > 0)
+        {
+            performUpdate();
+        }
+        return toReturn;
+    }
+
+    @Nullable
+    @Override
+    public FluidStack drain(int maxDrain, boolean doDrain) {
+        FluidStack toReturn = tank.drain(maxDrain, doDrain);
+        if (doDrain && toReturn != null && toReturn.amount > 0)
+        {
+            performUpdate();
+        }
+        return toReturn;
+    }
+
+    private void performUpdate()
+    {
+        this.markDirty();
+        this.worldObj.notifyBlockUpdate(pos, worldObj.getBlockState(pos), worldObj.getBlockState(pos), 0);
     }
 }

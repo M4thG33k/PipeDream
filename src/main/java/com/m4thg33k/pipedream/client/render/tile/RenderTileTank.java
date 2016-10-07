@@ -6,10 +6,12 @@ import com.m4thg33k.pipedream.client.render.models.ModelSphere;
 import com.m4thg33k.pipedream.client.render.models.ModelTankValve;
 import com.m4thg33k.pipedream.client.render.models.SphereModels;
 import com.m4thg33k.pipedream.core.util.LogHelper;
+import com.m4thg33k.pipedream.particles.ParticleFluidOrb;
 import com.m4thg33k.pipedream.tiles.TileTank;
 import javafx.scene.shape.Sphere;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -27,10 +29,14 @@ public class RenderTileTank extends RenderTileSymmetricBase<TileTank>{
     @Override
     public void renderTileEntityAt(TileTank te, double x, double y, double z, float partialTicks, int destroyStage) {
 
+
         if (te == null || !te.getWorld().isBlockLoaded(te.getPos(), false))
         {
             return;
         }
+
+//        LogHelper.info("spawning particle\t" + partialTicks);
+        Minecraft.getMinecraft().effectRenderer.addEffect(new ParticleFluidOrb(te.getWorld(), te.getPos().getX()+0.5, te.getPos().getY()+1.5, te.getPos().getZ()+0.5, 0, 0.1, 0, "water", 100));
 
         if (tankValve == null)
         {
@@ -49,7 +55,7 @@ public class RenderTileTank extends RenderTileSymmetricBase<TileTank>{
         filledPercentage += 0.1;
 
 
-        double worldTime = (te.getWorld() == null) ? 0 : (double)(ClientTickHandler.ticksInGame + partialTicks) + new Random(te.getPos().hashCode()).nextInt(360);
+        double worldTime = (double)(ClientTickHandler.ticksInGame + partialTicks) + new Random(te.getPos().hashCode()).nextInt(360);
 
         // get matrix set to the correct location
         GlStateManager.pushMatrix();

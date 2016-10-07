@@ -11,12 +11,15 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
+import java.util.Random;
+
 @Mod(modid = PipeDream.MODID, name = PipeDream.MODNAME, version = PipeDream.VERSION)
 public class PipeDream {
 
     public static final String MODID = "pipedream";
     public static final String VERSION = "@VERSION@";
     public static final String MODNAME = "PipeDream";
+    public static final Random RAND = new Random();
 
     @Mod.Instance
     public static PipeDream INSTANCE = new PipeDream();

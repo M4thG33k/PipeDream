@@ -1,6 +1,7 @@
 package com.m4thg33k.pipedream.client.events;
 
 import com.m4thg33k.pipedream.PipeDream;
+import com.m4thg33k.pipedream.client.render.FluidColorHelper;
 import com.m4thg33k.pipedream.core.util.LogHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -28,5 +29,11 @@ public class ClientEvents {
     private void reg(TextureStitchEvent.Pre pre, String suffix)
     {
         pre.getMap().registerSprite(new ResourceLocation(PipeDream.MODID, "blocks/"+suffix));
+    }
+
+    @SubscribeEvent
+    public void postStitchTexture(TextureStitchEvent.Post post) throws Exception
+    {
+        FluidColorHelper.postTextureStitch(post);
     }
 }

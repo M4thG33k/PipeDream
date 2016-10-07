@@ -4,8 +4,10 @@ import com.m4thg33k.pipedream.PipeDream;
 import com.m4thg33k.pipedream.client.events.ClientEvents;
 import com.m4thg33k.pipedream.client.handler.ClientTickHandler;
 import com.m4thg33k.pipedream.client.render.ModTESRs;
-import com.m4thg33k.pipedream.client.render.models.SphereModels;
 import com.m4thg33k.pipedream.client.render.registers.ItemRenderRegisters;
+import com.m4thg33k.pipedream.network.packets.BaseRenderingPacket;
+import com.m4thg33k.pipedream.network.packets.PacketTankFilling;
+import com.m4thg33k.pipedream.particles.ParticleManager;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -35,5 +37,13 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void postinit(FMLPostInitializationEvent event) {
         super.postinit(event);
+    }
+
+    @Override
+    public void handleRenderingPacket(BaseRenderingPacket packet) {
+        if (packet instanceof PacketTankFilling)
+        {
+            ParticleManager.tankFillingParticles((PacketTankFilling)packet);
+        }
     }
 }

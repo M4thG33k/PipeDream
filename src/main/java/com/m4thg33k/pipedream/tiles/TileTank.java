@@ -4,6 +4,8 @@ import com.m4thg33k.pipedream.core.connections.FluidConnections;
 import com.m4thg33k.pipedream.core.connections.QuantifiedConnections;
 import com.m4thg33k.pipedream.core.interfaces.IDismantleableTile;
 import com.m4thg33k.pipedream.core.util.LogHelper;
+import com.m4thg33k.pipedream.network.PipeDreamNetwork;
+import com.m4thg33k.pipedream.network.packets.PacketTankFilling;
 import com.m4thg33k.pipedream.particles.ParticleFluidOrb;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,9 +21,11 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
 
 public class TileTank extends TileEntity implements ITickable, IDismantleableTile, IFluidHandler{
 
@@ -34,11 +38,19 @@ public class TileTank extends TileEntity implements ITickable, IDismantleableTil
 
     protected int MAX_FLOW = 100;
 
+    protected HashMap<EnumFacing, SideHandler> sideHandlers = new HashMap<EnumFacing, SideHandler>();
+
     protected final static String fluidNBT = "tankFluidNBT";
+
 
     public TileTank()
     {
+        for (EnumFacing facing: EnumFacing.VALUES)
+        {
+            sideHandlers.put(facing, new SideHandler(facing));
+        }
 
+        sideHandlers.put(null, new SideHandler(null));
     }
 
     @Override
@@ -132,7 +144,7 @@ public class TileTank extends TileEntity implements ITickable, IDismantleableTil
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && (facing == null || fluidConnections.isSideConnected(facing)))
         {
 //            worldObj.notifyBlockUpdate(pos, worldObj.getBlockState(pos), worldObj.getBlockState(pos), 0);
-            return (T) this;
+            return (T) sideHandlers.get(facing);
         }
         return super.getCapability(capability, facing);
     }
@@ -198,8 +210,8 @@ public class TileTank extends TileEntity implements ITickable, IDismantleableTil
             if (fluidConnectionTypes.getConnectionValue(side) == (movingOut ? PUSH : PULL) && fluidConnections.isSideConnected(side)) {
                 TileEntity tile = worldObj.getTileEntity(pos.offset(side));
                 if (tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite())) {
-                    IFluidHandler from = movingOut ? tank : tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
-                    IFluidHandler to = movingOut ? tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()) : tank;
+                    IFluidHandler from = movingOut ? this.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side) : tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
+                    IFluidHandler to = movingOut ? tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()) : this.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side);
 
                     int amount = to.fill(from.drain(MAX_FLOW, false), false);
                     if (amount > 0) {
@@ -274,5 +286,59 @@ public class TileTank extends TileEntity implements ITickable, IDismantleableTil
     {
         this.markDirty();
         this.worldObj.notifyBlockUpdate(pos, worldObj.getBlockState(pos), worldObj.getBlockState(pos), 0);
+    }
+
+    public double getRadius()
+    {
+        return 0.65 * this.getPercentage();
+    }
+
+    private class SideHandler implements IFluidHandler{
+        private EnumFacing side;
+
+        public SideHandler(EnumFacing side)
+        {
+            this.side = side;
+        }
+        @Override
+        public IFluidTankProperties[] getTankProperties() {
+            return tank.getTankProperties();
+        }
+
+        @Override
+        public int fill(FluidStack resource, boolean doFill) {
+            int amount = tank.fill(resource, doFill);
+            if (doFill && amount > 0)
+            {
+                PipeDreamNetwork.sendToAllAround(new PacketTankFilling(pos, side, true, tank.getFluid().getFluid().getName(), amount), new NetworkRegistry.TargetPoint(worldObj.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 64));
+                performUpdate();
+            }
+            return amount;
+        }
+
+        @Nullable
+        @Override
+        public FluidStack drain(FluidStack resource, boolean doDrain) {
+            FluidStack moved =  tank.drain(resource, doDrain);
+            if (doDrain && moved != null && moved.amount > 0)
+            {
+                PipeDreamNetwork.sendToAllAround(new PacketTankFilling(pos, side, false, moved.getFluid().getName(), moved.amount), new NetworkRegistry.TargetPoint(worldObj.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 64));
+                performUpdate();
+            }
+            return moved;
+        }
+
+        @Nullable
+        @Override
+        public FluidStack drain(int maxDrain, boolean doDrain) {
+            FluidStack moved =  tank.drain(maxDrain, doDrain);
+            if (doDrain && moved != null && moved.amount > 0)
+            {
+                PipeDreamNetwork.sendToAllAround(new PacketTankFilling(pos, side, false, moved.getFluid().getName(), moved.amount), new NetworkRegistry.TargetPoint(worldObj.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 64));
+                performUpdate();
+            }
+            return moved;
+        }
+
     }
 }

@@ -80,6 +80,21 @@ public class ParticleManager {
         Minecraft.getMinecraft().effectRenderer.addEffect(new ParticleFluidOrb(Minecraft.getMinecraft().theWorld, start.xCoord, start.yCoord, start.zCoord, delta.xCoord, delta.yCoord, delta.zCoord, fluidName, 10));
     }
 
+    public static void spawnParticles(double radius, EnumFacing side, BlockPos blockPos, Vec3d start, boolean isFilling, String name, Vec3d extra)
+    {
+        Vec3d end = getRandomSphereLocation(radius, side, blockPos);
+        Vec3d delta = (end.subtract(new Vec3d(blockPos).add(extra))).scale(0.1);
+
+        if (isFilling)
+        {
+            doFillParticles(start, delta, name);
+        }
+        else
+        {
+            doDrainParticles(end, delta, name);
+        }
+    }
+
     public static void tankFillingParticles(PacketTankFilling packet)
     {
         World world = Minecraft.getMinecraft().theWorld;
@@ -95,35 +110,73 @@ public class ParticleManager {
         double radius = (((TileTank) tile).getRadius()+0.1)*0.5;
         if (packet.getSide() == EnumFacing.DOWN)
         {
+            startPos = new Vec3d(blockPos).addVector(0.5, 0, 0.5);
             for (int n=0; n <= packet.getAmount(); n += 100) {
-                Vec3d endLocation = getRandomSphereLocation(radius, packet.getSide(), blockPos);
-                startPos = new Vec3d(blockPos).addVector(0.5, 0, 0.5);
-                Vec3d delta = (endLocation.subtract(new Vec3d(blockPos))).scale(0.1);
-                if (packet.isFilling()) {
-                    doFillParticles(startPos, delta, name);
-                }
-                else
-                {
-                    doDrainParticles(endLocation, delta, name);
-                }
+                spawnParticles(radius, packet.getSide(), blockPos, startPos, packet.isFilling(), name, new Vec3d(0,0,0));
             }
         }
         else if (packet.getSide() == EnumFacing.UP)
         {
+            startPos = new Vec3d(blockPos).addVector(0.5, 1, 0.5);
             for (int n=0; n<= packet.getAmount(); n += 100)
             {
-                Vec3d endLocation = getRandomSphereLocation(radius, packet.getSide(), blockPos);
-                startPos = new Vec3d(blockPos).addVector(0.5, 1, 0.5);
+                spawnParticles(radius, packet.getSide(), blockPos, startPos, packet.isFilling(), name, new Vec3d(0,1,0));
+            }
+        }
+        else if (packet.getSide() == EnumFacing.NORTH)
+        {
+            startPos = new Vec3d(blockPos).addVector(0.5, 0.5, 0);
+            for (int n=0; n <= packet.getAmount(); n += 100)
+            {
+                spawnParticles(radius, packet.getSide(), blockPos, startPos, packet.isFilling(), name, new Vec3d(0, 0.5, -0.5));
+            }
+        }
+        else if (packet.getSide() == EnumFacing.SOUTH)
+        {
+            startPos = new Vec3d(blockPos).addVector(0.5, 0.5, 1);
+            for (int n=0; n <= packet.getAmount(); n += 100)
+            {
+                spawnParticles(radius, packet.getSide(), blockPos, startPos, packet.isFilling(), name, new Vec3d(0, 0.5, 0.5));
+            }
+        }
+        else if (packet.getSide() == EnumFacing.WEST)
+        {
+            startPos = new Vec3d(blockPos).addVector(0, 0.5, 0.5);
+            for (int n=0; n <= packet.getAmount(); n += 100)
+            {
+                spawnParticles(radius, packet.getSide(), blockPos, startPos, packet.isFilling(), name, new Vec3d(-0.5, 0.5, 0));
+            }
+        }
+        else if (packet.getSide() == EnumFacing.EAST)
+        {
+            startPos = new Vec3d(blockPos).addVector(1, 0.5, 0.5);
+            for (int n=0; n <= packet.getAmount(); n += 100)
+            {
+                spawnParticles(radius, packet.getSide(), blockPos, startPos, packet.isFilling(), name, new Vec3d(0.5, 0.5, 0));
+            }
+        }
+        else // null ==> bucket filling
+        {
+            double theta;
+            double psi;
+            Vec3d end;
+            Vec3d delta;
 
-                Vec3d delta = (endLocation.subtract(new Vec3d(blockPos).addVector(0, 1, 0))).scale(0.1);
-                if (packet.isFilling())
-                {
-                    doFillParticles(startPos, delta, name);
+            for (int n=0; n <= packet.getAmount(); n += 100) {
+                theta = getTheta(null);
+                psi = getPhi(null);
+                startPos = getSphereLocation(0.5, blockPos, theta, psi);
+                end = getSphereLocation(radius, blockPos, theta, psi);
+
+                if (!packet.isFilling()) {
+                    Vec3d temp = startPos;
+                    startPos = end;
+                    end = temp;
                 }
-                else
-                {
-                    doDrainParticles(endLocation, delta, name);
-                }
+
+                delta = (end.subtract(startPos)).scale(0.1);
+
+                Minecraft.getMinecraft().effectRenderer.addEffect(new ParticleFluidOrb(world, startPos.xCoord + 0.5, startPos.yCoord, startPos.zCoord + 0.5, delta.xCoord, delta.yCoord, delta.zCoord, name, 10));
             }
         }
     }

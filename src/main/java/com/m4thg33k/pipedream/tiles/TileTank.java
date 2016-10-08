@@ -307,37 +307,43 @@ public class TileTank extends TileEntity implements ITickable, IDismantleableTil
 
         @Override
         public int fill(FluidStack resource, boolean doFill) {
-            int amount = tank.fill(resource, doFill);
-            if (doFill && amount > 0)
-            {
-                PipeDreamNetwork.sendToAllAround(new PacketTankFilling(pos, side, true, tank.getFluid().getFluid().getName(), amount), new NetworkRegistry.TargetPoint(worldObj.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 64));
-                performUpdate();
+            if (side != null && fluidConnectionTypes.getConnectionValue(side) == PULL || fluidConnectionTypes.getConnectionValue(side) == STANDARD) {
+                int amount = tank.fill(resource, doFill);
+                if (doFill && amount > 0) {
+                    PipeDreamNetwork.sendToAllAround(new PacketTankFilling(pos, side, true, tank.getFluid().getFluid().getName(), amount), new NetworkRegistry.TargetPoint(worldObj.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 64));
+                    performUpdate();
+                }
+                return amount;
             }
-            return amount;
+            return 0;
         }
 
         @Nullable
         @Override
         public FluidStack drain(FluidStack resource, boolean doDrain) {
-            FluidStack moved =  tank.drain(resource, doDrain);
-            if (doDrain && moved != null && moved.amount > 0)
-            {
-                PipeDreamNetwork.sendToAllAround(new PacketTankFilling(pos, side, false, moved.getFluid().getName(), moved.amount), new NetworkRegistry.TargetPoint(worldObj.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 64));
-                performUpdate();
+            if (side != null && fluidConnectionTypes.getConnectionValue(side) == PUSH || fluidConnectionTypes.getConnectionValue(side) == STANDARD) {
+                FluidStack moved = tank.drain(resource, doDrain);
+                if (doDrain && moved != null && moved.amount > 0) {
+                    PipeDreamNetwork.sendToAllAround(new PacketTankFilling(pos, side, false, moved.getFluid().getName(), moved.amount), new NetworkRegistry.TargetPoint(worldObj.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 64));
+                    performUpdate();
+                }
+                return moved;
             }
-            return moved;
+            return null;
         }
 
         @Nullable
         @Override
         public FluidStack drain(int maxDrain, boolean doDrain) {
-            FluidStack moved =  tank.drain(maxDrain, doDrain);
-            if (doDrain && moved != null && moved.amount > 0)
-            {
-                PipeDreamNetwork.sendToAllAround(new PacketTankFilling(pos, side, false, moved.getFluid().getName(), moved.amount), new NetworkRegistry.TargetPoint(worldObj.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 64));
-                performUpdate();
+            if (side != null && fluidConnectionTypes.getConnectionValue(side) == PUSH || fluidConnectionTypes.getConnectionValue(side) == STANDARD) {
+                FluidStack moved = tank.drain(maxDrain, doDrain);
+                if (doDrain && moved != null && moved.amount > 0) {
+                    PipeDreamNetwork.sendToAllAround(new PacketTankFilling(pos, side, false, moved.getFluid().getName(), moved.amount), new NetworkRegistry.TargetPoint(worldObj.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 64));
+                    performUpdate();
+                }
+                return moved;
             }
-            return moved;
+            return null;
         }
 
     }

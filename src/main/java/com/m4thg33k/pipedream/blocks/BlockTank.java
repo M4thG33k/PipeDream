@@ -140,8 +140,8 @@ public class BlockTank extends BaseBlockTESR{
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
         TileEntity tile = source.getTileEntity(pos);
         double factor = tile == null || !(tile instanceof TileTank) ? 0.1 : 0.05+0.25*((TileTank) tile).getPercentage();
-        double small = 0.5 - factor;
-        double big = 0.5 + factor;
+        double small = Math.min(0.5 - factor, 0.4);
+        double big = Math.max(0.5 + factor, 0.6);
         AxisAlignedBB toReturn = new AxisAlignedBB(small, small, small, big, big, big);
 //        AxisAlignedBB toReturn = new AxisAlignedBB(0.35,0.35,0.35,0.65,0.65,0.65);
 

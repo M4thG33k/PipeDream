@@ -2,6 +2,7 @@ package com.m4thg33k.pipedream.client.render.registers;
 
 import com.m4thg33k.pipedream.PipeDream;
 import com.m4thg33k.pipedream.blocks.ModBlocks;
+import com.m4thg33k.pipedream.client.render.TankRenderHelper;
 import com.m4thg33k.pipedream.items.ModItems;
 import com.m4thg33k.pipedream.lib.Names;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -19,6 +20,6 @@ public class ItemRenderRegisters {
         }
 
 
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.blockTank), 0, new ModelResourceLocation(PipeDream.MODID+":"+Names.TILE_TANK,"normal"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.blockTank), 0, TankRenderHelper.SMART_MODEL);
     }
 }

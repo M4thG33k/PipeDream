@@ -15,10 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -128,6 +125,7 @@ public class BlockTank extends BaseBlockTESR{
                     ((TileTank) tile).incrementFluidConnectionType(side);
                 }
                 LogHelper.info("Tank has " + ((TileTank)tile).getAmount() + '\t' + ((TileTank)tile).getPercentage());
+                LogHelper.info("Light value: " + worldIn.getBlockState(pos).getBlock().getLightValue(state, worldIn, pos));
             }
 
 
@@ -165,5 +163,22 @@ public class BlockTank extends BaseBlockTESR{
 //    @Override
 //    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn) {
 //        collidingBoxes.add(new AxisAlignedBB(0.35,0.35,0.35,0.65,0.65,0.65));
+//    }
+
+
+//    @Override
+//    public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
+//        TileEntity tile = world.getTileEntity(pos);
+//        if (tile == null || !(tile instanceof TileTank))
+//        {
+//            return super.getLightValue(state, world, pos);
+//        }
+//
+//        return ((TileTank) tile).getLightValue();
+//    }
+//
+//    @Override
+//    public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
+//        return 0;
 //    }
 }

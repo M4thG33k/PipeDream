@@ -293,6 +293,22 @@ public class TileTank extends TileEntity implements ITickable, IDismantleableTil
         return 0.65 * this.getPercentage();
     }
 
+    public int getLightValue()
+    {
+        if (tank.getFluid() == null || tank.getFluid().amount == 0)
+        {
+            return 0;
+        }
+        return tank.getFluid().getFluid().getLuminosity();
+//        double percentage = this.getPercentage();
+//        if (percentage == 0)
+//        {
+//            return 0;
+//        }
+//        LogHelper.info(tank.getFluid().getFluid().getLuminosity() + " " + percentage);
+//        return (int)Math.ceil(tank.getFluid().getFluid().getLuminosity() * percentage);
+    }
+
     private class SideHandler implements IFluidHandler{
         private EnumFacing side;
 

@@ -14,6 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BaseBlockTESR extends BaseBlock implements IDismantleable{
@@ -42,6 +43,23 @@ public class BaseBlockTESR extends BaseBlock implements IDismantleable{
     public boolean isFullCube(IBlockState state) {
         return false;
     }
+
+    @Override
+    public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
+        return false;
+    }
+
+    @Override
+    public boolean isFullyOpaque(IBlockState state) {
+        return false;
+    }
+
+    @Override
+    public boolean isFullBlock(IBlockState state) {
+        return false;
+    }
+
+
 
     @Override
     public boolean isDismantleable(EntityPlayer player, World world, BlockPos pos) {

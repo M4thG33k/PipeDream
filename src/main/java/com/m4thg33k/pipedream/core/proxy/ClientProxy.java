@@ -4,6 +4,7 @@ import com.m4thg33k.pipedream.PipeDream;
 import com.m4thg33k.pipedream.client.events.ClientEvents;
 import com.m4thg33k.pipedream.client.handler.ClientTickHandler;
 import com.m4thg33k.pipedream.client.render.ModTESRs;
+import com.m4thg33k.pipedream.client.render.TankRenderHelper;
 import com.m4thg33k.pipedream.client.render.registers.ItemRenderRegisters;
 import com.m4thg33k.pipedream.network.packets.BaseRenderingPacket;
 import com.m4thg33k.pipedream.network.packets.PacketTankFilling;
@@ -24,6 +25,7 @@ public class ClientProxy extends CommonProxy {
 
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
+        MinecraftForge.EVENT_BUS.register(new TankRenderHelper());
         ModTESRs.preinit();
         ItemRenderRegisters.registerItemRenderers();
     }

@@ -62,4 +62,9 @@ public class ModelBaseModel {
     {
         ModelHelper.renderModel(model, color);
     }
+
+    public IBakedModel getModel()
+    {
+        return myModel;
+    }
 }

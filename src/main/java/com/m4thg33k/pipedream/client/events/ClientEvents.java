@@ -19,6 +19,7 @@ public class ClientEvents {
         reg(pre, "tankValvePull");
         reg(pre, "tankValvePush");
         reg(pre, "tankSphere");
+        reg(pre, "tankItem");
 
 //        pre.getMap().registerSprite(new ResourceLocation("pipedream","blocks/tankValve"));
 //        pre.getMap().registerSprite(new ResourceLocation("pipedream","blocks/tankValvePull"));

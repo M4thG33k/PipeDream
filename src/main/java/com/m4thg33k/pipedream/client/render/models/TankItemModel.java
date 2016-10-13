@@ -28,8 +28,8 @@ public class TankItemModel implements IPerspectiveAwareModel {
 
     public TankItemModel(IBakedModel baseModel)
     {
-
-        this.baseModel = new ModelTankValve().myModels.get(ModelTankValve.DEFAULT);
+        this.baseModel = new TankItemBakedModel().getModel();
+//        this.baseModel = new ModelTankValve().myModels.get(ModelTankValve.DEFAULT);
     }
 
     public IBakedModel handleItemState(ItemStack stack)
@@ -41,28 +41,46 @@ public class TankItemModel implements IPerspectiveAwareModel {
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
         // copied from SG
+
         Matrix4f matrix = new Matrix4f();
         switch (cameraTransformType) {
             case FIRST_PERSON_RIGHT_HAND:
                 matrix = ForgeHooksClient.getMatrix(getItemCameraTransforms().firstperson_right);
+                matrix.setTranslation(new javax.vecmath.Vector3f(-0.25f, 0.5f, -0.5f));
+                matrix.setScale(1.0f);
                 break;
             case FIRST_PERSON_LEFT_HAND:
                 matrix = ForgeHooksClient.getMatrix(getItemCameraTransforms().firstperson_left);
                 break;
             case GUI:
-                matrix = ForgeHooksClient.getMatrix(getItemCameraTransforms().gui);
+//                matrix.setTranslation(new javax.vecmath.Vector3f(1.0f, 1.0f, 10.0f));
+                matrix.mul(ForgeHooksClient.getMatrix(getItemCameraTransforms().gui));
+//                matrix.setTranslation(new javax.vecmath.Vector3f(0.5f, 0.5f, 0.5f));
+//                matrix.rotY(3.14159f/2f);
+                matrix.rotX(1.5f);
+                matrix.rotY(0.5f);
+                matrix.rotZ(0.8f);
+                matrix.setTranslation(new javax.vecmath.Vector3f(0.0f, 0.65f, 0.5f));
+                matrix.setScale(0.85f);
                 break;
             case HEAD:
                 matrix = ForgeHooksClient.getMatrix(getItemCameraTransforms().head);
                 break;
             case THIRD_PERSON_RIGHT_HAND:
                 matrix = ForgeHooksClient.getMatrix(getItemCameraTransforms().thirdperson_right);
+                matrix.rotX(1.2f);
+                matrix.setTranslation(new javax.vecmath.Vector3f(0.25f, 0.0f, 0.6f));
+                matrix.setScale(0.5f);
                 break;
             case THIRD_PERSON_LEFT_HAND:
                 matrix = ForgeHooksClient.getMatrix(getItemCameraTransforms().thirdperson_left);
+                matrix.rotX(1.2f);
+                matrix.setTranslation(new javax.vecmath.Vector3f(-0.25f, 0.0f, 0.6f));
+                matrix.setScale(0.5f);
                 break;
             case GROUND:
                 matrix = ForgeHooksClient.getMatrix(getItemCameraTransforms().ground);
+                matrix.setTranslation(new javax.vecmath.Vector3f(0.25f, 0.35f, 0.25f));
                 matrix.setScale(matrix.getScale() * 0.5f);
                 break;
             case FIXED:
@@ -78,16 +96,16 @@ public class TankItemModel implements IPerspectiveAwareModel {
         List<BakedQuad> quads = new ArrayList<BakedQuad>();
         List<BakedQuad> valveQuads = baseModel.getQuads(state, side, rand);
         quads.addAll(valveQuads);
-        for (BakedQuad quad : valveQuads)
-        {
-            int[] vertices = quad.getVertexData().clone();
-            for (int i=0; i < vertices.length; i++)
-            {
-
-                vertices[i] = vertices[i]+5;
-            }
-            quads.add(new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat()));
-        }
+//        for (BakedQuad quad : valveQuads)
+//        {
+//            int[] vertices = quad.getVertexData().clone();
+//            for (int i=0; i < vertices.length; i++)
+//            {
+//
+//                vertices[i] = vertices[i]+5;
+//            }
+//            quads.add(new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat()));
+//        }
         return quads;//baseModel.getQuads(state, side, rand);
     }
 

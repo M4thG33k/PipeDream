@@ -2,12 +2,15 @@ package com.m4thg33k.pipedream.client.render.models;
 
 import com.m4thg33k.pipedream.blocks.ModBlocks;
 import com.m4thg33k.pipedream.client.render.TankItemOverrideHandler;
+import com.m4thg33k.pipedream.core.util.LogHelper;
 import com.m4thg33k.pipedream.items.ModItems;
+import com.m4thg33k.pipedream.tiles.TileTank;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
@@ -26,6 +29,11 @@ public class TankItemModel implements IPerspectiveAwareModel {
 
     private ItemStack tank;
 
+    private String fluidName;
+    private int size;
+
+    protected double capacity = (double) TileTank.CAPACITY;
+
     public TankItemModel(IBakedModel baseModel)
     {
         this.baseModel = new TankItemBakedModel().getModel();
@@ -35,6 +43,20 @@ public class TankItemModel implements IPerspectiveAwareModel {
     public IBakedModel handleItemState(ItemStack stack)
     {
         tank = stack;
+        if (stack.hasTagCompound())
+        {
+            NBTTagCompound compound = stack.getTagCompound();
+            fluidName = compound.getString("FluidName");
+
+            int amount = compound.getInteger("Amount");
+
+            size = 0;
+            for (double x = 0; x < amount/capacity; x += 0.25)
+            {
+                size += 1;
+            }
+
+        }
         return this;
     }
 
@@ -94,19 +116,12 @@ public class TankItemModel implements IPerspectiveAwareModel {
     @Override
     public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
         List<BakedQuad> quads = new ArrayList<BakedQuad>();
-        List<BakedQuad> valveQuads = baseModel.getQuads(state, side, rand);
-        quads.addAll(valveQuads);
-//        for (BakedQuad quad : valveQuads)
-//        {
-//            int[] vertices = quad.getVertexData().clone();
-//            for (int i=0; i < vertices.length; i++)
-//            {
-//
-//                vertices[i] = vertices[i]+5;
-//            }
-//            quads.add(new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat()));
-//        }
-        return quads;//baseModel.getQuads(state, side, rand);
+        quads.addAll(baseModel.getQuads(state, side, rand));
+        if (size != 0)
+        {
+            quads.addAll(SphereItemModels.getSphereFromFluidName(fluidName,size).getQuads(state, side, rand));
+        }
+        return quads;
     }
 
     @Override

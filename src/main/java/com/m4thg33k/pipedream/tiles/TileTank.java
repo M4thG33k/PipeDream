@@ -29,7 +29,8 @@ import java.util.HashMap;
 
 public class TileTank extends TileEntity implements ITickable, IDismantleableTile, IFluidHandler{
 
-    protected FluidTank tank = new FluidTank(8*Fluid.BUCKET_VOLUME);
+    public static final int CAPACITY = 8 * Fluid.BUCKET_VOLUME;
+    protected FluidTank tank = new FluidTank(CAPACITY);
     protected FluidConnections fluidConnections = new FluidConnections();
     protected QuantifiedConnections fluidConnectionTypes = new QuantifiedConnections(3);
     protected int STANDARD = 0;

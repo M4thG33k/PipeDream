@@ -23,14 +23,20 @@ public class ItemWrench extends ItemBaseItem{
 
     @Override
     public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+        if (world.isRemote)
+        {
+            return EnumActionResult.PASS;
+        }
         Block block = world.getBlockState(pos).getBlock();
 
-        if (player.isSneaking() && block instanceof IDismantleable)
-        {
-            if (((IDismantleable)block).isDismantleable(player, world, pos))
-            {
-                ((IDismantleable)block).dismantle(player, world, pos);
+        if (block instanceof IDismantleable) {
+            if (player.isSneaking()) {
+                if (((IDismantleable) block).isDismantleable(player, world, pos)) {
+                    ((IDismantleable) block).dismantle(player, world, pos);
+                }
+                return EnumActionResult.SUCCESS;
             }
+            return EnumActionResult.PASS;
         }
         return EnumActionResult.PASS;
     }

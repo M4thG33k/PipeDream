@@ -1,6 +1,7 @@
 package com.m4thg33k.pipedream.client.render.models;
 
 import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.obj.OBJModel;
 
@@ -16,7 +17,18 @@ public class ModelBaseMultiModel {
 
     }
 
-    public void createModels(String modelName, String toReplace, Map<String, String> map)
+    public void createModelsWithResourceLocations(String modelName, String toReplace, Map<String, ResourceLocation> map)
+    {
+        OBJModel parent = ModelHelper.loadModel(modelName);
+
+        for (String key : map.keySet())
+        {
+            IModel model = ModelHelper.retextureFromResourceLocation(parent, toReplace, map.get(key));
+            myModels.put(key, ModelHelper.bake(model));
+        }
+    }
+
+    public void createModelsWithTextureName(String modelName, String toReplace, Map<String, String> map)
     {
         OBJModel parent = ModelHelper.loadModel(modelName);
 
